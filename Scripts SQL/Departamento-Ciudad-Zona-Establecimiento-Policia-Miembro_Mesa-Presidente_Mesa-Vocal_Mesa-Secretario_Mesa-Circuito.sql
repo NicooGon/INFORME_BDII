@@ -1,80 +1,81 @@
-CREATE DATABASE elecciones;
-USE elecciones;
-drop database elecciones;
-
-CREATE TABLE Departamento(
-	id_Departamento INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR (80) NOT NULL
+CREATE TABLE departamento(
+	departamento_id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR (255) NOT NULL
 );
 
-CREATE TABLE Ciudad(
-	id_Ciudad INT PRIMARY KEY AUTO_INCREMENT,
-	nombre VARCHAR (80) NOT NULL,
-    id_Departamento INT NOT NULL,
-    FOREIGN KEY (id_Departamento) REFERENCES Departamento(id_Departamento)
+CREATE TABLE ciudad(
+	ciudad_id INT PRIMARY KEY AUTO_INCREMENT,
+	nombre VARCHAR (255) NOT NULL,
+    departamento_id INT NOT NULL,
+    CONSTRAINT fk_ciudad_departamento FOREIGN KEY (departamento_id) REFERENCES departamento(departamento_id)
 );
 
-CREATE TABLE Zona(
-	id_Zona INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR (80),
+CREATE TABLE zona(
+	zona_id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR (255),
     esRural BOOLEAN NOT NULL,
-    id_Ciudad INT NOT NULL,
-    FOREIGN KEY (id_Ciudad) REFERENCES Ciudad(id_Ciudad)
+    ciudad_id INT NOT NULL,
+	CONSTRAINT fk_zona_ciudad FOREIGN KEY (ciudad_id) REFERENCES ciudad(ciudad_id)
 );
     
-CREATE TABLE Establecimiento(
-	id_Establecimiento INT PRIMARY KEY AUTO_INCREMENT,
-    nombre VARCHAR (80) NOT NULL,
-    calle VARCHAR (60) NOT NULL,
+CREATE TABLE establecimiento(
+	establecimiento_id INT PRIMARY KEY AUTO_INCREMENT,
+    nombre VARCHAR (255) NOT NULL,
+    calle VARCHAR (255) NOT NULL,
     numero INT UNSIGNED
 );
 
-CREATE TABLE Policia(
-	CI INT UNSIGNED PRIMARY KEY,
-    id_Establecimiento INT NOT NULL,
-    FOREIGN KEY (id_Establecimiento) REFERENCES Establecimiento(id_Establecimiento),
-    FOREIGN KEY (CI) REFERENCES Ciudadano(CI)
+CREATE TABLE policia(
+	cedula_identidad INT UNSIGNED PRIMARY KEY,
+    comisaria VARCHAR (255) NOT NULL,
+    establecimiento_id INT NOT NULL,
+    CONSTRAINT fk_policia_establecimiento FOREIGN KEY (establecimiento_id) REFERENCES establecimiento(establecimiento_id),
+    CONSTRAINT fk_policia_ciudadano FOREIGN KEY (cedula_identidad) REFERENCES ciudadano(cedula_identidad)
 );
 
-CREATE TABLE Miembro_Mesa(
-	CI INT UNSIGNED PRIMARY KEY,
-    FOREIGN KEY (CI) REFERENCES Ciudadano(CI)
+CREATE TABLE miembro_mesa(
+	cedula_identidad INT UNSIGNED PRIMARY KEY,
+     CONSTRAINT fk_miembro_ciudadano FOREIGN KEY (cedula_identidad) REFERENCES ciudadano(cedula_identidad)
 );
 
-CREATE TABLE Presidente_Mesa(
-	CI INT UNSIGNED PRIMARY KEY,
-    FOREIGN KEY (CI) REFERENCES Miembro_Mesa(CI)
+CREATE TABLE presidente_mesa(
+	cedula_identidad INT UNSIGNED PRIMARY KEY,
+    CONSTRAINT fk_presidente_miembro FOREIGN KEY (cedula_identidad) REFERENCES miembro_mesa(cedula_identidad)
 );
 
-CREATE TABLE Vocal_Mesa(
-	CI INT UNSIGNED PRIMARY KEY,
-    FOREIGN KEY (CI) REFERENCES Miembro_Mesa(CI)
+CREATE TABLE vocal_mesa(
+	cedula_identidad INT UNSIGNED PRIMARY KEY,
+    CONSTRAINT fk_vocal_miembro FOREIGN KEY (cedula_identidad) REFERENCES miembro_mesa(cedula_identidad)
 );
 
-CREATE TABLE Secretario_Mesa(
-	CI INT UNSIGNED PRIMARY KEY,
-    FOREIGN KEY (CI) REFERENCES Miembro_Mesa(CI)
+CREATE TABLE secretario_mesa(
+	cedula_identidad INT UNSIGNED PRIMARY KEY,
+    CONSTRAINT fk_secretario_miembro FOREIGN KEY (cedula_identidad) REFERENCES miembro_mesa(cedula_identidad)
 );
 
-CREATE TABLE Presidente_Ciudadano(
-	CI INT UNSIGNED PRIMARY KEY,
-	FOREIGN KEY (CI) REFERENCES Presidente_Mesa(CI),
-    FOREIGN KEY (CI) REFERENCES Ciudadano(CI)
+CREATE TABLE presidente_ciudadano(
+	presidente_ci INT UNSIGNED NOT NULL,
+    ciudadano_ci INT UNSIGNED NOT NULL,
+    PRIMARY KEY (presidente_ci, ciudadano_ci),
+	CONSTRAINT fk_presidente_ci FOREIGN KEY (presidente_ci) REFERENCES presidente_mesa(cedula_identidad),
+    CONSTRAINT fk_ciudadano_ci FOREIGN KEY (ciudadano_ci) REFERENCES ciudadano(cedula_identidad)
 );
 
-CREATE TABLE Circuito(
-	id_Circuito INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE circuito (
+    circuito_id INT PRIMARY KEY AUTO_INCREMENT,
     numero INT UNSIGNED NOT NULL,
-    id_Zona INT NOT NULL,
-    id_Eleccion INT NOT NULL,
-    id_Establecimiento INT NOT NULL,
-    CI INT UNSIGNED NOT NULL,
-    FOREIGN KEY (id_Zona) REFERENCES Zona(id_Zona),
-    FOREIGN KEY (id_Eleccion) REFERENCES Eleccion(id_Eleccion),
-    FOREIGN KEY (id_Establecimiento) REFERENCES Establecimiento(id_Establecimiento),
-    FOREIGN KEY (CI) REFERENCES Presidente_Mesa(CI),
-    FOREIGN KEY (CI) REFERENCES Vocal_Mesa(CI),
-    FOREIGN KEY (CI) REFERENCES Secretario_Mesa(CI)
+    zona_id INT NOT NULL,
+    eleccion_id INT NOT NULL,
+    establecimiento_id INT NOT NULL,
+    presidente_mesa_ci INT UNSIGNED NOT NULL,
+    vocal_mesa_ci INT UNSIGNED NOT NULL,
+    secretario_mesa_ci INT UNSIGNED NOT NULL,
+    CONSTRAINT fk_circuito_zona FOREIGN KEY (zona_id) REFERENCES zona(zona_id),
+    CONSTRAINT fk_circuito_eleccion FOREIGN KEY (eleccion_id) REFERENCES eleccion(eleccion_id),
+    CONSTRAINT fk_circuito_establecimiento FOREIGN KEY (establecimiento_id) REFERENCES establecimiento(establecimiento_id),
+    CONSTRAINT fk_circuito_presidente FOREIGN KEY (presidente_mesa_ci) REFERENCES presidente_mesa(cedula_identidad),
+    CONSTRAINT fk_circuito_vocal FOREIGN KEY (vocal_mesa_ci) REFERENCES vocal_mesa(cedula_identidad),
+    CONSTRAINT fk_circuito_secretario FOREIGN KEY (secretario_mesa_ci) REFERENCES secretario_mesa(cedula_identidad)
 );
 
 
