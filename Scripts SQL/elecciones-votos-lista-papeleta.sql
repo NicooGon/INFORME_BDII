@@ -1,60 +1,60 @@
 CREATE TABLE ELECCION(
-	id_eleccion int auto_increment primary key,
+	eleccion_id int auto_increment primary key,
 	fecha date not null
 );
 
 CREATE TABLE ELECCION_PRESIDENCIAL(
-	id_eleccion int primary key,
-	foreign key (id_eleccion) references eleccion(id_eleccion) 
+	eleccion_id int primary key,
+	foreign key (eleccion_id) references eleccion(eleccion_id) 
 );
 
 CREATE TABLE ELECCION_REFERENDUM(
-	id_eleccion int primary key,
-	foreign key (id_eleccion) references eleccion(id_eleccion) 
+	eleccion_id int primary key,
+	foreign key (eleccion_id) references eleccion(eleccion_id) 
 );
 
 CREATE TABLE ELECCION_PLEBISITO(
-	id_eleccion int primary key,
-	foreign key (id_eleccion) references eleccion(id_eleccion) 
+	eleccion_id int primary key,
+	foreign key (eleccion_id) references eleccion(eleccion_id) 
 );
 
 CREATE TABLE ELECCION_MUNICIPAL(
-	id_eleccion int primary key,
-	foreign key (id_eleccion) references eleccion(id_eleccion) 
+	eleccion_id int primary key,
+	foreign key (eleccion_id) references eleccion(eleccion_id) 
 );
 
 CREATE TABLE ELECCION_BALLOTAGE(
-	id_eleccion int primary key,
-	foreign key (id_eleccion) references eleccion(id_eleccion) 
+	eleccion_id int primary key,
+	foreign key (eleccion_id) references eleccion(eleccion_id) 
 );
 
 CREATE TABLE ELECCION_INTERNAS(
-	id_eleccion int primary key,
-	foreign key (id_eleccion) references eleccion(id_eleccion) 
+	eleccion_id int primary key,
+	foreign key (eleccion_id) references eleccion(eleccion_id) 
 );
 
 CREATE TABLE LISTA(
-    id_eleccion int not null,
+    eleccion_id int not null,
     numero int not null,
-	foreign key (id_eleccion) references eleccion(id_eleccion),
-	primary key(id_eleccion, numero)
+	foreign key (eleccion_id) references eleccion(eleccion_id),
+	primary key(eleccion_id, numero)
 );
 
 CREATE TABLE PAPELETA(
-	id_eleccion int not null,
+	eleccion_id int not null,
 	valor boolean not null,
     color varchar(35) not null,
-    foreign key (id_eleccion) references eleccion(id_eleccion),
-    primary key(id_eleccion, valor)
+    foreign key (eleccion_id) references eleccion(eleccion_id),
+    primary key(eleccion_id, valor)
 );
 
 CREATE TABLE VOTO(
-	id_voto int not null unique,
-    id_eleccion int not null,
+	voto_id int not null unique,
+    eleccion_id int not null,
     numero_lista int not null,
     valor boolean not null,
-    primary key (id_eleccion, id_voto),
-    foreign key (id_eleccion) references eleccion(id_eleccion),
-    foreign key (id_eleccion, numero_lista) references lista(id_eleccion, numero),
-    foreign key (id_eleccion, valor) references papeleta(id_eleccion, valor)
+    primary key (eleccion_id, voto_id),
+    foreign key (eleccion_id) references eleccion(eleccion_id),
+    foreign key (eleccion_id, numero_lista) references lista(eleccion_id, numero),
+    foreign key (eleccion_id, valor) references papeleta(eleccion_id, valor)
 );
