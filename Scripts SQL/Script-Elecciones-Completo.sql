@@ -1,5 +1,6 @@
 CREATE DATABASE IF NOT EXISTS elecciones;
 USE elecciones;
+DROP DATABASE elecciones;
 
 CREATE TABLE departamento(
 	departamento_id INT PRIMARY KEY AUTO_INCREMENT,
@@ -164,7 +165,7 @@ CREATE TABLE voto(
 	voto_id INT NOT NULL,
     numero_lista INT UNSIGNED,
     valor BOOLEAN,
-    cedula_identidad INT UNSIGNED NOT NULL,
+    cedula_identidad INT UNSIGNED NULL,
     departamento_id INT NOT NULL,
     PRIMARY KEY (eleccion_id, numero, voto_id),
     CONSTRAINT fk_voto_circuito FOREIGN KEY (eleccion_id, numero) REFERENCES circuito(eleccion_id, numero),
@@ -176,43 +177,64 @@ CREATE TABLE voto(
 INSERT INTO departamento (nombre) VALUES
 ('Montevideo'),
 ('Canelones'),
-('Maldonado');
+('Maldonado'),
+('Artigas'),
+('Rocha');
 
 INSERT INTO ciudad (nombre, departamento_id) VALUES
 ('Montevideo', 1),
 ('Las Piedras', 2),
-('Punta del Este', 3);
+('Punta del Este', 3),
+('Artigas Ciudad', 4),
+('Chuy', 5);
 
 INSERT INTO zona (nombre, esRural, ciudad_id) VALUES
 ('Centro', FALSE, 1),
 ('Barrio Sur', FALSE, 1),
-('Zona Rural Este', TRUE, 2);
+('Zona Rural Este', TRUE, 2),
+('Centro Artigas', FALSE, 4),
+('Zona Rural Rocha', TRUE, 5);
 
 INSERT INTO establecimiento (nombre, calle, numero, zona_id) VALUES
 ('Escuela Nº 1', '18 de Julio', 1234, 1),
 ('Escuela Nº 2', 'Av. Italia', 5678, 2),
-('Escuela Rural', 'Camino Vecinal', 0, 3);
+('Escuela Rural', 'Camino Vecinal', 0, 3),
+('Escuela Nº 3', 'Calle Artigas', 456, 4),
+('Escuela Rural Rocha', 'Ruta 9', 0, 5);
 
 INSERT INTO eleccion (nombre, habilitado, fecha, tipo_eleccion) VALUES
-('Elección Presidencial 2014', FALSE, '2014-10-26', 'PRESIDENCIAL'),
-('Elección Presidencial 2019', FALSE, '2019-10-27', 'PRESIDENCIAL'),
-('Elección Presidencial 2025', TRUE,  '2024-10-27', 'PRESIDENCIAL');
+('Elección Presidencial 2014', TRUE, '2014-10-26', 'PRESIDENCIAL'),
+('Elección Presidencial 2019', TRUE, '2019-10-27', 'PRESIDENCIAL'),
+('Elección Presidencial 2025', FALSE,  '2024-10-27', 'PRESIDENCIAL'),
+('Elección Presidencial 2028', FALSE,  '2024-10-27', 'PRESIDENCIAL');
 
 INSERT INTO cargo (nombre) VALUES
 ('Diputado'),
 ('Senador'),
-('Intendente');
+('Presidente'),
+('Intendente'),
+('Edil');
 
 INSERT INTO credencial (serie, numero, validez) VALUES
 ('A', 10001, TRUE),
 ('1', 12345, TRUE),
-('C3', 3001, FALSE);
+('C3', 3001, FALSE),
+('AAA', 6099,TRUE),
+('AAA',4040,TRUE),
+('E', 40001, TRUE),
+('E', 40002, TRUE),
+('F', 50001, TRUE);
 
 INSERT INTO ciudadano (cedula_identidad, nombre, apellido, fecha_nacimiento, serie_credencial, numero_credencial) VALUES
 (12345678, 'Marta', 'Perez', '1990-05-12', 'A', 10001),
 (56789012, 'Diego', 'Gonzalez', '1990-05-20', '1', 12345),
 (34567890, 'Luis', 'Rodríguez', '1975-12-05', NULL, NULL),
-(23456789, 'Ana', 'Fernández', '1985-07-14', NULL, NULL);
+(23456789, 'Ana', 'Fernández', '1985-07-14', NULL, NULL),
+(44444444,'Luis','Avenida Pou','1970-01-01','AAA',4040),
+(66966969,'Yamandu','Orsai','1970-01-01','AAA', 6099),
+(12121212, 'Sofia', 'Diaz', '1992-03-10', 'E', 40001),
+(13131313, 'Martin', 'Lopez', '1987-11-05', 'E', 40002),
+(14141414, 'Julia', 'Fernandez', '1994-07-22', 'F', 50001);
 
 INSERT INTO partido_politico (nombre, calle_sede, numero_sede, presidente_ci) VALUES
 ('Partido Verde', 'Av. Libertad', '1000', 12345678),
@@ -220,44 +242,60 @@ INSERT INTO partido_politico (nombre, calle_sede, numero_sede, presidente_ci) VA
 ('Partido Rojo', 'Calle Real', '321', 34567890);
 
 INSERT INTO politico (cedula_identidad, partido_id, cargo_id) VALUES
-(12345678, 1, 3),
-(23456789, 2, 1),
-(34567890, 3, 2);
+(44444444,2,3),
+(66966969,3,3),
+(56789012, 1, 2);
 
 INSERT INTO presidente_mesa (cedula_identidad) VALUES
 (12345678),
 (23456789),
-(34567890);
+(34567890),
+(12121212);
 
 INSERT INTO vocal_mesa (cedula_identidad) VALUES
 (34567890),
 (12345678),
-(23456789);
+(23456789),
+(13131313);
 
 INSERT INTO secretario_mesa (cedula_identidad) VALUES
 (34567890),
 (12345678),
-(23456789);
+(23456789),
+(14141414);
 
 INSERT INTO lista (eleccion_id, departamento_id, numero) VALUES
-(1, 1, 1),
-(1, 2, 2),
-(2, 1, 1);
+(1,1,202),
+(1,1,303),
+(2,1,221),
+(2,1,55),
+(3, 1, 404),
+(3, 1, 609);
 
 INSERT INTO lista_politico (eleccion_id, numero_lista, cedula_identidad, departamento_id) VALUES
-(1, 1, 12345678, 1),
-(1, 2, 23456789, 2),
-(2, 1, 34567890, 1);
+(1, 202, 44444444, 1), 
+(1, 303, 56789012, 1), 
+(2, 221, 44444444, 1), 
+(2, 55, 66966969, 1),
+(3, 404, 44444444, 1),
+(3, 609,66966969 , 1);
 
 INSERT INTO circuito (eleccion_id, numero, habilitado, establecimiento_id, presidente_mesa_ci, vocal_mesa_ci, secretario_mesa_ci) VALUES
 (1, 101, TRUE, 1, 12345678, 34567890, 34567890),
-(2, 102, FALSE, 2, 23456789, 12345678, 34567890),
-(3, 103, TRUE, 3, 34567890, 23456789, 12345678);
+(2, 102, TRUE, 2, 23456789, 12345678, 34567890),
+(3, 103, FALSE, 3, 34567890, 23456789, 12345678),
+(3, 182, FALSE, 1, 12121212, 13131313, 14141414);
 
 INSERT INTO credencial_circuito (serie, numero, eleccion_id, numero_circuito, participo) VALUES
-('A', 10001, 1, 101, TRUE),
+('A', 10001, 1, 101, FALSE),
+('A', 10001, 2, 102, FALSE),
+('A', 10001, 3, 103, FALSE),
+('1', 12345, 1, 101, FALSE),
 ('1', 12345, 2, 102, FALSE),
-('C3', 3001, 3, 103, TRUE);
+('1', 12345, 3, 103, FALSE),
+('C3', 3001, 1, 101, FALSE),
+('C3', 3001, 2, 102, FALSE),
+('C3', 3001, 3, 103, FALSE);
 
 INSERT INTO policia (cedula_identidad, comisaria, establecimiento_id) VALUES
 (12345678, 'Comisaría 1', 1),
@@ -270,6 +308,68 @@ INSERT INTO papeleta (eleccion_id, valor, color) VALUES
 (2, TRUE, 'ROSADO');
 
 INSERT INTO voto (eleccion_id, numero, voto_id, numero_lista, valor, cedula_identidad, departamento_id) VALUES
-(1, 101, 1, 1, FALSE, 12345678, 1),
-(1, 101, 2, 2, FALSE, 23456789, 2),
-(2, 102, 1, 1, TRUE, 34567890, 1);
+(3, 103, 4, 404, null,44444444 , 1),
+(3, 103, 5, 404, null,44444444 , 1),
+(3, 103, 6, 404, null,44444444 , 1),
+(3, 103, 7, 404, null,44444444 , 1),
+(3, 103, 8, 404, null,44444444 , 1),
+(3, 103, 9, 404, null,44444444 , 1),
+(3, 103, 10, 404, null,44444444 , 1),
+(3, 103, 11, 404, null,44444444 , 1),
+(3, 103, 12, 404, null,44444444 , 1),
+(3, 103, 13, 404, null,44444444 , 1),
+(3, 103, 14, 404, null,44444444 , 1),
+(3, 103, 15, 404, null,44444444 , 1),
+(3, 103, 16, 609, null,66966969 , 1),
+(3, 103, 17, 609, null,66966969 , 1),
+(3, 103, 18, 609, null,66966969 , 1),
+(3, 103, 19, 609, null,66966969 , 1),
+(3, 103, 20, 609, null,66966969 , 1),
+(3, 103, 21, 609, null,66966969 , 1),
+(3, 103, 22, 609, null,66966969 , 1),
+(3, 103, 23, 609, null,66966969 , 1),
+(3, 103, 24, 609, null,66966969 , 1),
+(3, 103, 25, 609, null,66966969 , 1),
+(3,103,31,404,null,44444444,1),
+(3,103,32,404,null,44444444,1),
+(3,103,33,404,null,44444444,1),
+(3,103,34,404,null,44444444,1),
+(3,103,35,404,null,44444444,1),
+(3,103,36,404,null,44444444,1),
+(3,103,37,404,null,44444444,1),
+(3,103,38,404,null,44444444,1),
+(3, 182, 4, 404, null,44444444 , 1),
+(3, 182, 5, 404, null,44444444 , 1),
+(3, 182, 6, 404, null,44444444 , 1),
+(3, 182, 7, 404, null,44444444 , 1),
+(3, 182, 8, 404, null,44444444 , 1),
+(3, 182, 9, 404, null,44444444 , 1),
+(3, 182, 10, 404, null,44444444 , 1),
+(3, 182, 11, 404, null,44444444 , 1),
+(3, 182, 12, 404, null,44444444 , 1),
+(3, 182, 13, 404, null,44444444 , 1),
+(3, 182, 14, 404, null,44444444 , 1),
+(3, 182, 15, 404, null,44444444 , 1),
+(3, 182, 16, 609, null,66966969 , 1),
+(3, 182, 17, 609, null,66966969 , 1),
+(3, 182, 18, 609, null,66966969 , 1),
+(3, 182, 19, 609, null,66966969 , 1),
+(3, 182, 20, 609, null,66966969 , 1),
+(3, 182, 21, 609, null,66966969 , 1),
+(3, 182, 22, 609, null,66966969 , 1),
+(3, 182, 23, 609, null,66966969 , 1),
+(3, 182, 24, 609, null,66966969 , 1),
+(3, 182, 25, 609, null,66966969 , 1),
+(3,182,31,404,null,44444444,1),
+(3,182,32,404,null,44444444,1),
+(3,182,33,404,null,44444444,1),
+(3,182,34,404,null,44444444,1),
+(3,182,35,404,null,44444444,1),
+(3,182,36,404,null,44444444,1),
+(3,182,37,404,null,44444444,1),
+(3,182,38,404,null,44444444,1),
+(3, 182, 39, null, null, null , 1),
+(3, 182, 40, null, null, null , 1),
+(3, 182, 41, null, null, null , 1),
+(3, 182, 42, null ,null, null , 1),
+(3, 182, 43, null, null, null , 1);
